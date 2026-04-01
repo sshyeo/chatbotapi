@@ -1,27 +1,28 @@
-import requests
+import streamlit as st
+from tmdb_api import search_movie, format_movie_info
 
-API_KEY = "5ba70d355399491611d6e9f9ce0e5377"
-BASE_URL = "https://api.themoviedb.org/3"
-IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
+st.title("Movie Info Chatbot")
+st.caption("Ask me about any movie! Just type the title.")
 
-def search_movie(title):
-    url = f"{BASE_URL}/search/movie"
-    params = {"query": title, "api_key": API_KEY}
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        results = response.json().get("results", [])
-        if results:
-            return results[0]
-    return None
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-def format_movie_info(movie):
-    poster_path = movie.get("poster_path")
-    poster_url = f"{IMAGE_BASE_URL}{poster_path}" if poster_path else None
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        if msg["role"] == "assistant" and msg.get("poster_url"):
+            st.image(msg["poster_url"], width=200)
+        st.markdown(msg["content"])
 
-    info = (
-        f"Judul: {movie['title']} ({movie.get('release_date', 'N/A')[:4]})\n\n"
-        f"Rating: {movie.get('vote_average', 'N/A')}/10\n\n"
-        f"Sinopsis: {movie.get('overview', 'No description available.')}"
-    )
+if prompt := st.chat_input("Type a movie title..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-    return info, poster_url
+    movie = search_movie(prompt)
+    if movie:
+        reply, poster_url = format_movie_info(movie)
+    else:
+        reply = f"Sorry, I couldn't find anything for '{prompt}'. Try another title!"
+        poster_url = None
+
+    st.session_state.
