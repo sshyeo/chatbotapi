@@ -19,6 +19,9 @@ def format_movie_info(movie):
     poster_url = f"{IMAGE_BASE_URL}{poster_path}" if poster_path else None
 
     info = (
-        f"🎬 **{movie['title']}** ({movie.get('release_date', 'N/A')[:4]})\n\n"
-        f"⭐ Rating: {movie.get('vote_average', 'N/A')}/10\n\n"
-        f"📖 {movie.get('overview', 'No des
+        f"Judul: {movie['title']} ({movie.get('release_date', 'N/A')[:4]})\n\n"
+        f"Rating: {movie.get('vote_average', 'N/A')}/10\n\n"
+        f"Sinopsis: {movie.get('overview', 'No description available.')}"
+    )
+
+    return info, poster_url
