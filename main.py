@@ -1,7 +1,7 @@
 import requests
 
 url = "https://api.themoviedb.org/3/search/movie"
-params = {"query": "Inception", "api_key": "739c63f73d647351eb95da97576c2d80"}
+params = {"query": "Inception", "api_key": "ab7d78d61b543d4013e49d7d23a763c5"}
 response = requests.get(url, params=params)   # <-- this is the API call
 response.json()
 
